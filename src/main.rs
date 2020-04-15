@@ -30,7 +30,7 @@ async fn main() -> io::Result<()> {
                 web::resource("").to(error::http_error::not_found)
             )
     })
-    .bind("127.0.0.1:80")
+    .bind("0.0.0.0:80")
     .expect("Can't start server")
     .run()
     .await
