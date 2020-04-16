@@ -1,3 +1,6 @@
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize)]
 pub struct Cache {
-    pub data: String,
+    pub data: serde_json::Value,
 }

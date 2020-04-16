@@ -1,15 +1,15 @@
-async fn return_json(result: String) -> String {
+async fn return_json(result: &serde_json::value::Value) -> String {
     if result != "null" {
         return format!("{{
   \"success\": true,
   \"data\": {}
 }}", result)
-    } else {
-        return format!("{{
-            \"success\": false,
-            \"data\": null
-          }}")
     }
+
+    return format!("{{
+  \"success\": false,
+  \"data\": null
+}}")
 }
 
 pub mod common {
@@ -22,8 +22,7 @@ pub mod common {
     pub async fn get_all_menu(
         cache: web::Data<Cache>
     ) -> HttpResponse {
-        let dreamin: serde_json::Value = serde_json::from_str(&cache.data).expect("Not valid json");
-        let dreamin = serde_json::to_string_pretty(&dreamin).unwrap();
+        let dreamin = &cache.data;
 
         HttpResponse::Ok()
             .content_type("application/json")
@@ -52,8 +51,7 @@ pub mod dynamic {
         cache: web::Data<Cache>, 
         param: web::Path<String>
     ) -> HttpResponse {
-        let dreamin: serde_json::Value = serde_json::from_str(&cache.data).expect("Not valid json");
-        let dreamin = serde_json::to_string_pretty(&dreamin[format!("{}", param)]).unwrap();
+        let dreamin = &cache.data[format!("{}", param)];
 
         HttpResponse::Ok()
             .content_type("application/json")
@@ -75,13 +73,9 @@ pub mod dynamic {
         cache: web::Data<Cache>, 
         param: web::Path<(String, String)>
     ) -> HttpResponse {
-        let dreamin: serde_json::Value = serde_json::from_str(&cache.data).expect("Not valid json");
-
-        let dreamin = serde_json::to_string_pretty(
-            &dreamin
-                [format!("{}", param.0)]
-                [format!("{}", param.1)]
-        ).unwrap();
+        let dreamin = &cache.data
+            [format!("{}", param.0)]
+            [format!("{}", param.1)];
 
         HttpResponse::Ok()
             .content_type("application/json")

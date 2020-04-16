@@ -10,18 +10,20 @@ mod error;
 
 #[actix_rt::main]
 async fn main() -> io::Result<()> {
-    let mut file = File::open("static/dreamin.json").expect("File not found");
-    let mut dreamin = String::new();
+    HttpServer::new(|| {
+        let mut file = File::open("static/dreamin.json").expect("File not found");
+        let mut dreamin = String::new();
+    
+        file.read_to_string(&mut dreamin).expect("Unable to read file");
 
-    file.read_to_string(&mut dreamin).expect("Unable to read file");
+        let data: serde_json::Value = serde_json::from_str(&dreamin.to_string()).expect("Not a valid json");
 
-    HttpServer::new(move || {
         App::new()
             .wrap(
                 middleware::Compress::default()
             )
             .data(cache::Cache {
-                data: dreamin.to_string()
+                data: data
             })
             .service(route::common::get_all_menu)
             .service(route::dynamic::get_menu_by_type)
