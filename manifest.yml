@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: dreamin-api
+  name: dreamin-api
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: dreamin-api
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: dreamin-api
+    spec:
+      containers:
+      - image: rust-dreamin
+        name: rust-dreamin
+        imagePullPolicy: Never
+        resources: {}
+        ports:
+          - containerPort: 80
+status: {}
